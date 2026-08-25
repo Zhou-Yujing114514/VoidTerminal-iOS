@@ -24,7 +24,7 @@
 		A100001D000000000000A01 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001E000000000000A01 /* ChatView.swift */; };
 		A100001F000000000000A01 /* GroupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000020000000000000A01 /* GroupSettingsView.swift */; };
 		A1000021000000000000A01 /* MomentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000022000000000000A01 /* MomentsView.swift */; };
-		A1000025000000000000A01 /* TwoFAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000026000000000000A01 /* TwoFAView.swift */; };
+		A100003F000000000000A01 /* TwoFAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000040000000000000A01 /* TwoFAView.swift */; };
 		A1000023000000000000A01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000024000000000000A01 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +47,7 @@
 		A100001E000000000000A01 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		A1000020000000000000A01 /* GroupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSettingsView.swift; sourceTree = "<group>"; };
 		A1000022000000000000A01 /* MomentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentsView.swift; sourceTree = "<group>"; };
-		A1000026000000000000A01 /* TwoFAView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoFAView.swift; sourceTree = "<group>"; };
+		A1000040000000000000A01 /* TwoFAView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoFAView.swift; sourceTree = "<group>"; };
 		A1000024000000000000A01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000026000000000000A01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -139,7 +139,7 @@
 				A1000018000000000000A01 /* ContactsView.swift */,
 				A100001A000000000000A01 /* DiscoverView.swift */,
 				A100001C000000000000A01 /* ProfileView.swift */,
-				A1000026000000000000A01 /* TwoFAView.swift */,
+				A1000040000000000000A01 /* TwoFAView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -269,7 +269,7 @@
 				A1000017000000000000A01 /* ContactsView.swift in Sources */,
 				A1000019000000000000A01 /* DiscoverView.swift in Sources */,
 				A100001B000000000000A01 /* ProfileView.swift in Sources */,
-				A1000025000000000000A01 /* TwoFAView.swift in Sources */,
+				A100003F000000000000A01 /* TwoFAView.swift in Sources */,
 				A100001D000000000000A01 /* ChatView.swift in Sources */,
 				A100001F000000000000A01 /* GroupSettingsView.swift in Sources */,
 				A1000021000000000000A01 /* MomentsView.swift in Sources */,
