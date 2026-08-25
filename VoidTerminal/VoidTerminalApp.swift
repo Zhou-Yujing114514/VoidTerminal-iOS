@@ -63,18 +63,26 @@ final class AppState: ObservableObject {
         NotificationCenter.default.addObserver(forName: .maxOnlineUpdate, object: nil, queue: .main) { [weak self] notif in
             self?.maxOnline = notif.object as? Int ?? 0
         }
+        // M6: 服务器地址更改后重新登录
+        NotificationCenter.default.addObserver(forName: .serverConfigChanged, object: nil, queue: .main) { [weak self] _ in
+            self?.logout()
+        }
     }
 
     func restoreSession() async {
         guard let token = token else { return }
-        do {
-            let me = try await api.me(token: token)
-            await MainActor.run {
-                self.currentUser = me
+        for attempt in 0..<3 {
+            do {
+                let me = try await api.me(token: token)
+                await MainActor.run { self.currentUser = me }
+                return
+            } catch {
+                if attempt < 2 {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    continue
+                }
+                await MainActor.run { self.token = nil }
             }
-            // WebSocket连接统一在MainTabView.onAppear中建立，避免重复连接
-        } catch {
-            await MainActor.run { self.token = nil }
         }
     }
 
@@ -83,7 +91,10 @@ final class AppState: ObservableObject {
         token = nil
         currentUser = nil
         isAdmin = false
-        // 清服务端 session（依赖 URLSession 已存的 Cookie）
+        let defaults = UserDefaults.standard
+        ["vt_friends", "vt_groups", "vt_global_msgs", "vt_dm_msgs", "vt_group_msgs", "vt_current_uid"].forEach {
+            defaults.removeObject(forKey: $0)
+        }
         Task { await api.logout() }
     }
 }

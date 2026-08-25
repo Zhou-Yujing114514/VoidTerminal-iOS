@@ -56,7 +56,5 @@
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>需要访问相册以选择头像和发送图片</string>
-	<key>NSCameraUsageDescription</key>
-	<string>需要访问相机以拍摄照片</string>
 </dict>
 </plist>

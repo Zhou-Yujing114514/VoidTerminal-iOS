@@ -191,10 +191,12 @@ struct AuthView: View {
         Task {
             do {
                 _ = try await api.register(username: regUsername, password: regPassword)
+                // Q7: 注册成功后自动登录
+                let resp = try await api.login(username: regUsername, password: regPassword)
                 await MainActor.run {
-                    message = "注册成功，请登录"
-                    isLogin = true
-                    loginUsername = regUsername
+                    appState.token = resp.token
+                    appState.currentUser = resp.user
+                    chatVM.setCurrentUserId(resp.user.id)
                     isLoading = false
                 }
             } catch {
@@ -226,6 +228,8 @@ struct ServerConfigView: View {
                 Section {
                     Button("保存") {
                         ServerConfig.shared.baseURL = serverURL
+                        // M6: 通知服务器地址已更改，需要重新登录
+                        NotificationCenter.default.post(name: .serverConfigChanged, object: nil)
                         dismiss()
                     }
                     .foregroundColor(Color(hex: "07c160"))

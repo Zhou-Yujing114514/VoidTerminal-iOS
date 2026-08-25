@@ -278,6 +278,12 @@ final class ChatViewModel: ObservableObject {
                 self?.showToast("你的入群申请被拒绝了")
             }
         }
+        // M7: 断线提示
+        ws.onDisconnect = { [weak self] in
+            Task { @MainActor in
+                self?.showToast("连接已断开，正在重连...")
+            }
+        }
     }
 
     var currentUserId: String {
@@ -320,6 +326,10 @@ final class ChatViewModel: ObservableObject {
     }
     
     func respondToGroupRequest(applyId: String, action: String) {
+        guard ws.isConnected else {
+            toast = "网络未连接，操作失败"
+            return
+        }
         ws.sendGroupApplyRespond(applyId: applyId, action: action)
         groupRequests.removeAll { $0.id == applyId }
     }
@@ -375,6 +385,11 @@ final class ChatViewModel: ObservableObject {
 
     func sendMessage(_ text: String, images: [String] = []) {
         guard let room = currentRoom, !text.isEmpty || !images.isEmpty else { return }
+        // M2: 检查连接状态，断线时给提示
+        guard ws.isConnected else {
+            toast = "网络未连接，消息发送失败"
+            return
+        }
         let tempId = "temp_" + UUID().uuidString
         let now = Int(Date().timeIntervalSince1970 * 1000)
         var tempMsg = ChatMessage(
@@ -406,6 +421,19 @@ final class ChatViewModel: ObservableObject {
 
     func recallMessage(_ msg: ChatMessage) {
         guard let room = currentRoom else { return }
+        // M5: 2分钟限制
+        let now = Int(Date().timeIntervalSince1970 * 1000)
+        if now - msg.time > 120000 {
+            toast = "超过2分钟的消息无法撤回"
+            return
+        }
+        // M5/Q5: 检查连接
+        guard ws.isConnected else {
+            toast = "网络未连接，撤回失败"
+            return
+        }
+        // 先本地移除，失败时回滚
+        removeMessageLocally(msg)
         switch room {
         case .global:
             ws.recall(room: "global", id: msg.id)
@@ -452,4 +480,5 @@ extension Notification.Name {
     static let maxOnlineUpdate = Notification.Name("maxOnlineUpdate")
     static let adminStatusUpdate = Notification.Name("adminStatusUpdate")
     static let fontSizeChanged = Notification.Name("fontSizeChanged")
+    static let serverConfigChanged = Notification.Name("serverConfigChanged")
 }

@@ -42,28 +42,27 @@ struct GroupSettingsView: View {
                 // 群成员
                 Section("群成员") {
                     ForEach(group.members, id: \.self) { memberId in
-                        if let member = chatVM.user(by: memberId) {
-                            HStack {
-                                AvatarView(name: member.username, avatarURL: member.avatar, size: 36)
-                                Text(member.username)
+                        let member = chatVM.user(by: memberId) ?? User(id: memberId, username: memberId, avatar: nil, role: nil, banned: nil, createdAt: nil)
+                        HStack {
+                            AvatarView(name: member.username, avatarURL: member.avatar, size: 36)
+                            Text(member.username)
+                                .foregroundColor(.vtText)
+                            if memberId == group.owner {
+                                Text("群主")
+                                    .font(.vt(size: 10, weight: .semibold))
                                     .foregroundColor(.vtText)
-                                if memberId == group.owner {
-                                    Text("群主")
-                                        .font(.vt(size: 10, weight: .semibold))
-                                        .foregroundColor(.vtText)
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
-                                        .background(LinearGradient(colors: [Color(hex: "07c160"), Color(hex: "0ea5e9")], startPoint: .leading, endPoint: .trailing))
-                                        .cornerRadius(4)
-                                }
-                                Spacer()
-                                if isOwner && memberId != group.owner {
-                                    Button(role: .destructive) {
-                                        WebSocketService.shared.groupRemoveMember(gid: group.id, userId: memberId)
-                                    } label: {
-                                        Image(systemName: "minus.circle.fill")
-                                            .foregroundColor(.red)
-                                    }
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(LinearGradient(colors: [Color(hex: "07c160"), Color(hex: "0ea5e9")], startPoint: .leading, endPoint: .trailing))
+                                    .cornerRadius(4)
+                            }
+                            Spacer()
+                            if isOwner && memberId != group.owner {
+                                Button(role: .destructive) {
+                                    WebSocketService.shared.groupRemoveMember(gid: group.id, userId: memberId)
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundColor(.red)
                                 }
                             }
                         }

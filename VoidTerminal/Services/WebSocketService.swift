@@ -431,8 +431,6 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     }
 }
 
-import Foundation
-
 final class AppLogger {
     static let shared = AppLogger()
     private(set) var logs: [String] = []
