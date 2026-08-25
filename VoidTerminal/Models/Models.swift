@@ -193,12 +193,13 @@ struct HelloMessage: Codable {
     let groups: [ChatGroup]?
     let friends: [User]?
     let pendingRequests: [FriendRequest]?
+    let groupApplyRequests: [GroupRequest]?
     let dmRooms: [String: [ChatMessage]]?
     let groupMsgs: [String: [ChatMessage]]?
     let moments: [Moment]?
 
     enum CodingKeys: String, CodingKey {
-        case type, maxOnline, isAdmin, hallName, announcement, globalMsgs, groups, friends, pendingRequests, dmRooms, groupMsgs, moments
+        case type, maxOnline, isAdmin, hallName, announcement, globalMsgs, groups, friends, pendingRequests, groupApplyRequests, dmRooms, groupMsgs, moments
         case selfUser = "self"
     }
 }

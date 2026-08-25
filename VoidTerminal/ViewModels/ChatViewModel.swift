@@ -344,6 +344,7 @@ final class ChatViewModel: ObservableObject {
         groups = (msg.groups ?? []).map { var g = $0; g.isOwner = (g.owner == currentUserId); return g }
         friends = msg.friends ?? []
         pendingRequests = msg.pendingRequests ?? []
+        groupRequests = msg.groupApplyRequests ?? []
         if let gm = msg.groupMsgs {
             groupMessages = gm.mapValues { arr in
                 arr.map { var m = $0; m.isFromMe = (m.from == currentUserId); return m }
