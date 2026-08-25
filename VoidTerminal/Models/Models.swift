@@ -231,37 +231,3 @@ struct GroupRequest: Codable, Identifiable {
         case id, gid, groupName, from, fromName, fromAvatar, time, status
     }
 }
-
-// MARK: - WebSocket Message Wrapper
-struct WSMessage: Codable {
-    let type: String
-    // Various payloads
-    var error: String?
-    var token: String?
-    var content: String?
-    var images: [String]?
-    var to: String?
-    var gid: String?
-    var id: String?
-    var room: String?
-    var name: String?
-    var members: [String]?
-    var username: String?
-    var requestId: String?
-    var action: String?
-    var value: Int?
-    var userId: String?
-    var text: String?
-    var momentId: String?
-    var commentId: String?
-    var newUsername: String?
-    var oldPassword: String?
-    var newPassword: String?
-    var newPassword2: String?
-    var data: String? // base64 image
-    var image: String?
-    // 群申请相关
-    var apply: GroupRequest?
-    var group: ChatGroup?
-    var applyId: String?
-}
