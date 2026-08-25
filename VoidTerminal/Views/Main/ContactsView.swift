@@ -583,13 +583,13 @@ struct FriendRequestRow: View {
         HStack(spacing: 12) {
             // 头像
             if let avatar = req.fromAvatar, !avatar.isEmpty {
-                AvatarView(name: req.fromName, avatarURL: avatar, size: 44)
+                AvatarView(name: req.fromName ?? "?", avatarURL: avatar, size: 44)
             } else {
                 Circle()
                     .fill(Color.vtPanel2)
                     .frame(width: 44, height: 44)
                     .overlay(
-                        Text(String(req.fromName.prefix(1)))
+                        Text(String((req.fromName ?? "?").prefix(1)))
                             .font(.vt(size: 16, weight: .semibold))
                             .foregroundColor(.vtText)
                     )
@@ -597,7 +597,7 @@ struct FriendRequestRow: View {
             
             // 信息
             VStack(alignment: .leading, spacing: 4) {
-                Text(req.fromName)
+                Text(req.fromName ?? "未知用户")
                     .font(.vt(size: 15, weight: .semibold))
                     .foregroundColor(.vtText)
                 Text("请求添加你为好友")

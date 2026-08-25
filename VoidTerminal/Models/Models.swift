@@ -94,7 +94,7 @@ struct ChatGroup: Codable, Identifiable, Hashable {
 struct FriendRequest: Codable, Identifiable, Hashable {
     let id: String
     let from: String
-    let fromName: String
+    var fromName: String?
     var fromAvatar: String?
     let time: Int
 }
