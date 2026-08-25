@@ -51,9 +51,27 @@ final class APIService {
         try await post("/api/login", body: ["username": username, "password": password])
     }
 
+    // 认证器码登录（无需密码）
+    func loginTotp(username: String, code: String) async throws -> LoginResponse {
+        try await post("/api/login-totp", body: ["username": username, "code": code])
+    }
+
     func me(token: String) async throws -> User {
         let resp: MeResponse = try await post("/api/me", body: ["token": token])
         return resp.user
+    }
+
+    // MARK: - 两步验证
+    func enable2FA(token: String) async throws -> TOTPEnableResponse {
+        try await post("/api/2fa/enable", body: ["token": token])
+    }
+
+    func confirm2FA(token: String, code: String) async throws {
+        let _: [String: Bool] = try await post("/api/2fa/confirm", body: ["token": token, "code": code])
+    }
+
+    func disable2FA(token: String, code: String) async throws {
+        let _: [String: Bool] = try await post("/api/2fa/disable", body: ["token": token, "code": code])
     }
 
     // MARK: - Avatar

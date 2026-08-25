@@ -6,6 +6,7 @@ struct ProfileView: View {
     @EnvironmentObject var chatVM: ChatViewModel
     @State private var showChangeUsername = false
     @State private var showChangePassword = false
+    @State private var showTwoFA = false
     @State private var showFontSize = false
     @State private var showAdmin = false
     @State private var showServerConfig = false
@@ -96,6 +97,8 @@ struct ProfileView: View {
 
                             menuButton(title: "更改密码") { showChangePassword = true }
 
+                            menuButton(title: "两步验证") { showTwoFA = true }
+
                             menuButton(title: "服务器设置") { showServerConfig = true }
                             menuButton(title: "🔍 调试日志") { showDebugLog = true }
 
@@ -135,6 +138,7 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showChangeUsername) { ChangeUsernameView() }
             .sheet(isPresented: $showChangePassword) { ChangePasswordView() }
+            .sheet(isPresented: $showTwoFA) { TwoFAView() }
             .sheet(isPresented: $showFontSize) { FontSizeView() }
             .sheet(isPresented: $showAdmin) { AdminView().environmentObject(chatVM) }
             .sheet(isPresented: $showServerConfig) { ServerConfigView() }
