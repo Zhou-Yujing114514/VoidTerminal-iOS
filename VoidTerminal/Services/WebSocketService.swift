@@ -393,7 +393,8 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     // MARK: - Connection Check
     private func startConnectionCheck() {
         connectionCheckTimer?.invalidate()
-        connectionCheckTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+        // 每秒静默检查一次连接，断线立即重连，不影响使用
+        connectionCheckTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             guard let self = self, !self.isManualDisconnect else { return }
             if !self.isConnected, let token = self.token {
                 print("WS connection check: not connected, reconnecting...")
@@ -406,7 +407,8 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     // MARK: - Heartbeat
     private func startHeartbeat() {
         heartbeatTimer?.invalidate()
-        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 25, repeats: true) { [weak self] _ in
+        // 心跳从25秒改成15秒，保持连接活跃，防止被中间设备断开
+        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { [weak self] _ in
             self?.sendPing()
         }
     }

@@ -376,6 +376,14 @@ struct SearchGroupView: View {
                 }
             }
         }
+        .overlay(
+            VStack {
+                if let toast = chatVM.toast {
+                    ToastView(message: toast)
+                    Spacer()
+                }
+            }
+        )
     }
 }
 

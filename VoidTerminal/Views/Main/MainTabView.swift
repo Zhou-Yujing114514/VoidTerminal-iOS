@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var chatVM: ChatViewModel
     @EnvironmentObject var appState: AppState
+    @Environment(\.scenePhase) private var scenePhase
     @State private var selectedTab = 0
     @State private var showMoments = false
 
@@ -51,6 +52,14 @@ struct MainTabView: View {
             // 确保进入主界面后建立WebSocket连接（此时ChatViewModel回调已就绪）
             if let token = appState.token {
                 WebSocketService.shared.connect(token: token)
+            }
+        }
+        .onChange(of: scenePhase) { newPhase in
+            // 从后台回到前台时，立即检查连接，断线则重连
+            if newPhase == .active, let token = appState.token {
+                if !WebSocketService.shared.isConnected {
+                    WebSocketService.shared.connect(token: token)
+                }
             }
         }
     }
