@@ -583,7 +583,7 @@ struct FriendRequestRow: View {
         HStack(spacing: 12) {
             // 头像
             if let avatar = req.fromAvatar, !avatar.isEmpty {
-                AvatarView(url: avatar, size: 44)
+                AvatarView(name: req.fromName, avatarURL: avatar, size: 44)
             } else {
                 Circle()
                     .fill(Color.vtPanel2)
