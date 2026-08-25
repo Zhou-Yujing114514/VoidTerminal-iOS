@@ -54,7 +54,7 @@ struct MainTabView: View {
                 WebSocketService.shared.connect(token: token)
             }
         }
-        .onChange(of: scenePhase) { _, newPhase in
+        .onChange(of: scenePhase) { newPhase in
             // 从后台回到前台时，立即检查连接，断线则重连
             if newPhase == .active, let token = appState.token {
                 if !WebSocketService.shared.isConnected {
