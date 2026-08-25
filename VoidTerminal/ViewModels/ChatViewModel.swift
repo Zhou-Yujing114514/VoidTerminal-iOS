@@ -230,6 +230,8 @@ final class ChatViewModel: ObservableObject {
             Task { @MainActor in
                 if let idx = self?.groups.firstIndex(where: { $0.id == gid }) {
                     self?.groups[idx].members = group.members
+                    self?.groups[idx].memberNames = group.memberNames
+                    self?.groups[idx].memberAvatars = group.memberAvatars
                 }
             }
         }
