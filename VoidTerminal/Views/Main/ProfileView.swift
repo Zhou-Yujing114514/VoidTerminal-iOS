@@ -124,9 +124,11 @@ struct ProfileView: View {
                 guard let newValue = newValue else { return }
                 Task {
                     if let data = try? await newValue.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data),
+                       let jpeg = image.jpegData(compressionQuality: 0.8),
                        let token = appState.token {
                         do {
-                            let avatar = try await api.uploadAvatar(token: token, imageData: data)
+                            let avatar = try await api.uploadAvatar(token: token, imageData: jpeg)
                             await MainActor.run {
                                 appState.currentUser?.avatar = avatar
                             }

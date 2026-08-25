@@ -138,9 +138,11 @@ struct GroupSettingsView: View {
                 guard let newValue = newValue else { return }
                 Task {
                     if let data = try? await newValue.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data),
+                       let jpeg = image.jpegData(compressionQuality: 0.8),
                        let token = UserDefaults.standard.string(forKey: "vt_token") {
                         do {
-                            _ = try await APIService.shared.uploadGroupAvatar(token: token, gid: group.id, imageData: data)
+                            _ = try await APIService.shared.uploadGroupAvatar(token: token, gid: group.id, imageData: jpeg)
                             chatVM.showToast("群头像已更新")
                         } catch {
                             message = error.localizedDescription
