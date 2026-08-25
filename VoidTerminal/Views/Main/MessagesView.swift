@@ -7,6 +7,7 @@ struct MessagesView: View {
     @State private var searchText = ""
     @State private var activeRoom: ChatViewModel.RoomType?
     @State private var showGroupRequests = false
+    @State private var showFriendRequests = false
 
     var body: some View {
         NavigationStack {
@@ -103,7 +104,7 @@ struct MessagesView: View {
                                     preview: "等待处理的验证请求",
                                     unread: chatVM.pendingRequests.count
                                 ) {
-                                    // 显示好友验证面板
+                                    showFriendRequests = true
                                 }
                             }
 
@@ -166,6 +167,16 @@ struct MessagesView: View {
             .navigationBarHidden(true)
             .fullScreenCover(item: $activeRoom) { room in
                 ChatView(room: room)
+                    .environmentObject(chatVM)
+                    .environmentObject(appState)
+            }
+            .sheet(isPresented: $showGroupRequests) {
+                GroupRequestsView()
+                    .environmentObject(chatVM)
+                    .environmentObject(appState)
+            }
+            .sheet(isPresented: $showFriendRequests) {
+                FriendRequestsView()
                     .environmentObject(chatVM)
                     .environmentObject(appState)
             }

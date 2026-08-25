@@ -53,9 +53,9 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
 
     // MARK: - Connection
     func connect(token: String) {
-        isManualDisconnect = false
         reconnectAttempts = 0
         if task != nil { disconnect() }
+        isManualDisconnect = false  // 必须在 disconnect() 之后设置，否则会被覆盖
         startConnectionCheck()
         self.token = token
         guard let url = URL(string: ServerConfig.shared.wsURL) else { return }
