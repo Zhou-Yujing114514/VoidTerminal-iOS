@@ -231,6 +231,8 @@ final class ChatViewModel: ObservableObject {
             Task { @MainActor in
                 if let idx = self?.groups.firstIndex(where: { $0.id == gid }) {
                     self?.groups[idx].members = group.members
+                    self?.groups[idx].memberNames = group.memberNames
+                    self?.groups[idx].memberAvatars = group.memberAvatars
                 }
             }
         }
@@ -345,6 +347,7 @@ final class ChatViewModel: ObservableObject {
         groups = (msg.groups ?? []).map { var g = $0; g.isOwner = (g.owner == currentUserId); return g }
         friends = msg.friends ?? []
         pendingRequests = msg.pendingRequests ?? []
+        groupRequests = msg.groupApplyRequests ?? []
         if let gm = msg.groupMsgs {
             groupMessages = gm.mapValues { arr in
                 arr.map { var m = $0; m.isFromMe = (m.from == currentUserId); return m }

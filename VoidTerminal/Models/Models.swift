@@ -83,11 +83,13 @@ struct ChatGroup: Codable, Identifiable, Hashable {
     var name: String
     let owner: String
     var members: [String]
+    var memberNames: [String]?
+    var memberAvatars: [String]?
     var avatar: String?
     let createdAt: Int?
     var isOwner: Bool = false
     enum CodingKeys: String, CodingKey {
-        case id, name, owner, members, avatar, createdAt
+        case id, name, owner, members, memberNames, memberAvatars, avatar, createdAt
     }
 }
 
@@ -193,12 +195,13 @@ struct HelloMessage: Codable {
     let groups: [ChatGroup]?
     let friends: [User]?
     let pendingRequests: [FriendRequest]?
+    let groupApplyRequests: [GroupRequest]?
     let dmRooms: [String: [ChatMessage]]?
     let groupMsgs: [String: [ChatMessage]]?
     let moments: [Moment]?
 
     enum CodingKeys: String, CodingKey {
-        case type, maxOnline, isAdmin, hallName, announcement, globalMsgs, groups, friends, pendingRequests, dmRooms, groupMsgs, moments
+        case type, maxOnline, isAdmin, hallName, announcement, globalMsgs, groups, friends, pendingRequests, groupApplyRequests, dmRooms, groupMsgs, moments
         case selfUser = "self"
     }
 }

@@ -41,11 +41,12 @@ struct GroupSettingsView: View {
 
                 // 群成员
                 Section("群成员") {
-                    ForEach(group.members, id: \.self) { memberId in
-                        let member = chatVM.user(by: memberId) ?? User(id: memberId, username: memberId, avatar: nil, role: nil, banned: nil, createdAt: nil)
+                    ForEach(Array(group.members.enumerated()), id: \.element) { index, memberId in
+                        let memberName = (group.memberNames != nil && index < group.memberNames!.count) ? group.memberNames![index] : (chatVM.user(by: memberId)?.username ?? memberId)
+                        let memberAvatar = (group.memberAvatars != nil && index < group.memberAvatars!.count) ? group.memberAvatars![index] : (chatVM.user(by: memberId)?.avatar ?? nil)
                         HStack {
-                            AvatarView(name: member.username, avatarURL: member.avatar, size: 36)
-                            Text(member.username)
+                            AvatarView(name: memberName, avatarURL: memberAvatar, size: 36)
+                            Text(memberName)
                                 .foregroundColor(.vtText)
                             if memberId == group.owner {
                                 Text("群主")
@@ -138,9 +139,11 @@ struct GroupSettingsView: View {
                 guard let newValue = newValue else { return }
                 Task {
                     if let data = try? await newValue.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data),
+                       let jpeg = image.jpegData(compressionQuality: 0.8),
                        let token = UserDefaults.standard.string(forKey: "vt_token") {
                         do {
-                            _ = try await APIService.shared.uploadGroupAvatar(token: token, gid: group.id, imageData: data)
+                            _ = try await APIService.shared.uploadGroupAvatar(token: token, gid: group.id, imageData: jpeg)
                             chatVM.showToast("群头像已更新")
                         } catch {
                             message = error.localizedDescription
