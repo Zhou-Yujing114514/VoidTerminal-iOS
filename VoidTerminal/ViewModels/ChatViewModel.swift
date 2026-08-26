@@ -22,6 +22,7 @@ final class ChatViewModel: ObservableObject {
     private let ws = WebSocketService.shared
     private let api = APIService.shared
     private var currentUserName: String = "我"
+    private var lastSendTime: TimeInterval = 0  // 防抖：防止连续点击多次发送
 
     enum RoomType: Hashable {
         case global
@@ -385,6 +386,10 @@ final class ChatViewModel: ObservableObject {
 
     func sendMessage(_ text: String, images: [String] = []) {
         guard let room = currentRoom, !text.isEmpty || !images.isEmpty else { return }
+        // 防抖：300ms内连续点击只发送一次
+        let now = Date().timeIntervalSince1970
+        if now - lastSendTime < 0.3 { return }
+        lastSendTime = now
         // M2: 检查连接状态，断线时给提示
         guard ws.isConnected else {
             toast = "网络未连接，消息发送失败"
