@@ -141,7 +141,7 @@ struct GroupSettingsView: View {
                     if let data = try? await newValue.loadTransferable(type: Data.self),
                        let image = UIImage(data: data),
                        let jpeg = image.jpegData(compressionQuality: 0.8),
-                       let token = UserDefaults.standard.string(forKey: "vt_token") {
+                       let token = KeychainHelper.shared.readString(account: "vt_token") {
                         do {
                             _ = try await APIService.shared.uploadGroupAvatar(token: token, gid: group.id, imageData: jpeg)
                             chatVM.showToast("群头像已更新")

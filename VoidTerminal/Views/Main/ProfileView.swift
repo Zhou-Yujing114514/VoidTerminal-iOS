@@ -11,6 +11,7 @@ struct ProfileView: View {
     @State private var showAdmin = false
     @State private var showServerConfig = false
     @State private var showDebugLog = false
+    @State private var showChangelog = false
     @State private var avatarItem: PhotosPickerItem?
 
     private let api = APIService.shared
@@ -101,6 +102,7 @@ struct ProfileView: View {
 
                             menuButton(title: "服务器设置") { showServerConfig = true }
                             menuButton(title: "🔍 调试日志") { showDebugLog = true }
+                            menuButton(title: "📋 更新日志") { showChangelog = true }
 
                             Button {
                                 appState.logout()
@@ -146,6 +148,9 @@ struct ProfileView: View {
             .sheet(isPresented: $showServerConfig) { ServerConfigView() }
             .sheet(isPresented: $showDebugLog) {
                 DebugLogView()
+            }
+            .sheet(isPresented: $showChangelog) {
+                ChangelogView()
             }
         }
     }

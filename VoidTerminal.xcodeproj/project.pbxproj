@@ -25,6 +25,10 @@
 		A100001F000000000000A01 /* GroupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000020000000000000A01 /* GroupSettingsView.swift */; };
 		A1000021000000000000A01 /* MomentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000022000000000000A01 /* MomentsView.swift */; };
 		A100003F000000000000A01 /* TwoFAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000040000000000000A01 /* TwoFAView.swift */; };
+		A1000051000000000000A01 /* SecurityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000052000000000000A01 /* SecurityHelper.swift */; };
+		A1000053000000000000A01 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000054000000000000A01 /* ImageCacheManager.swift */; };
+		A1000055000000000000A01 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000056000000000000A01 /* NetworkMonitor.swift */; };
+		A1000057000000000000A01 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000058000000000000A01 /* ChangelogView.swift */; };
 		A1000023000000000000A01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000024000000000000A01 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +52,10 @@
 		A1000020000000000000A01 /* GroupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSettingsView.swift; sourceTree = "<group>"; };
 		A1000022000000000000A01 /* MomentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentsView.swift; sourceTree = "<group>"; };
 		A1000040000000000000A01 /* TwoFAView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoFAView.swift; sourceTree = "<group>"; };
+		A1000052000000000000A01 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
+		A1000054000000000000A01 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		A1000056000000000000A01 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		A1000058000000000000A01 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
 		A1000024000000000000A01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000026000000000000A01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +106,9 @@
 			children = (
 				A1000008000000000000A01 /* APIService.swift */,
 				A100000A000000000000A01 /* WebSocketService.swift */,
+				A1000052000000000000A01 /* SecurityHelper.swift */,
+				A1000054000000000000A01 /* ImageCacheManager.swift */,
+				A1000056000000000000A01 /* NetworkMonitor.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -140,6 +151,7 @@
 				A100001A000000000000A01 /* DiscoverView.swift */,
 				A100001C000000000000A01 /* ProfileView.swift */,
 				A1000040000000000000A01 /* TwoFAView.swift */,
+				A1000058000000000000A01 /* ChangelogView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -273,6 +285,10 @@
 				A100001D000000000000A01 /* ChatView.swift in Sources */,
 				A100001F000000000000A01 /* GroupSettingsView.swift in Sources */,
 				A1000021000000000000A01 /* MomentsView.swift in Sources */,
+				A1000051000000000000A01 /* SecurityHelper.swift in Sources */,
+				A1000053000000000000A01 /* ImageCacheManager.swift in Sources */,
+				A1000055000000000000A01 /* NetworkMonitor.swift in Sources */,
+				A1000057000000000000A01 /* ChangelogView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,7 +430,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voidterminal.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -443,7 +459,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voidterminal.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

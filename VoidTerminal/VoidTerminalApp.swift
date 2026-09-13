@@ -4,6 +4,20 @@ import SwiftUI
 struct VoidTerminalApp: App {
     @StateObject private var appState = AppState()
 
+    init() {
+        // 配置全局 URLCache：内存 20MB + 磁盘 200MB
+        // 让所有 URLSession 请求（含 AsyncImage）自动获得 HTTP 级缓存
+        let cache = URLCache(
+            memoryCapacity: 20 * 1024 * 1024,   // 20MB 内存
+            diskCapacity: 200 * 1024 * 1024,     // 200MB 磁盘
+            diskPath: "url_cache"
+        )
+        URLCache.shared = cache
+
+        // 启动网络状态监控
+        NetworkMonitor.shared.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
@@ -15,12 +29,15 @@ struct VoidTerminalApp: App {
 
 // MARK: - App State
 final class AppState: ObservableObject {
+    /// Token 存储在 Keychain 中（不再明文存 UserDefaults，仅本设备、不上 iCloud）
+    private let tokenKey = "vt_token"
+
     @Published var token: String? {
         didSet {
             if let token = token {
-                UserDefaults.standard.set(token, forKey: "vt_token")
+                KeychainHelper.shared.saveString(token, account: tokenKey)
             } else {
-                UserDefaults.standard.removeObject(forKey: "vt_token")
+                KeychainHelper.shared.delete(account: tokenKey)
             }
         }
     }
@@ -47,7 +64,8 @@ final class AppState: ObservableObject {
     enum FontSize: String { case sm, md, lg, xl }
 
     init() {
-        self.token = UserDefaults.standard.string(forKey: "vt_token")
+        // 从 Keychain 读取 Token
+        self.token = KeychainHelper.shared.readString(account: tokenKey)
         if let themeStr = UserDefaults.standard.string(forKey: "vt_theme"),
            let t = Theme(rawValue: themeStr) { self.theme = t }
         self.isAdmin = UserDefaults.standard.bool(forKey: "vt_is_admin")

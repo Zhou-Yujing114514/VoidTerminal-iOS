@@ -376,17 +376,14 @@ struct ChatView: View {
                 Button {
                     previewImageURL = url
                 } label: {
-                    AsyncImage(url: URL(string: url)) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image.resizable().aspectRatio(contentMode: .fill)
-                        default:
-                            Color.gray.frame(width: 80, height: 80)
-                        }
+                    if let imgURL = URL(string: url) {
+                        CachedAsyncImage(url: imgURL)
+                            .frame(width: images.count == 1 ? 160 : 70, height: images.count == 1 ? 160 : 70)
+                            .clipped()
+                            .cornerRadius(6)
+                    } else {
+                        Color.gray.frame(width: images.count == 1 ? 160 : 70, height: images.count == 1 ? 160 : 70)
                     }
-                    .frame(width: images.count == 1 ? 160 : 70, height: images.count == 1 ? 160 : 70)
-                    .clipped()
-                    .cornerRadius(6)
                 }
             }
         }
@@ -510,13 +507,10 @@ struct ImagePreviewView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            AsyncImage(url: URL(string: url)) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().aspectRatio(contentMode: .fit)
-                default:
-                    ProgressView()
-                }
+            if let imgURL = URL(string: url) {
+                CachedAsyncImage(url: imgURL, contentMode: .fit, placeholderColor: .black)
+            } else {
+                ProgressView()
             }
         }
         .onTapGesture { dismiss() }
