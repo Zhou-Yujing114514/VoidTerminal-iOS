@@ -18,6 +18,7 @@ struct ChatView: View {
     @State private var scrollProxy: ScrollViewProxy?
     @State private var showMentionPanel = false
     @State private var mentionSearchText = ""
+    @State private var isSending = false
     @FocusState private var isInputFocused: Bool
 
     private let api = APIService.shared
@@ -453,8 +454,8 @@ struct ChatView: View {
                     .background(Color(hex: "07c160"))
                     .cornerRadius(8)
             }
-            .disabled(messageText.isEmpty && draftImages.isEmpty)
-            .opacity(messageText.isEmpty && draftImages.isEmpty ? 0.5 : 1)
+            .disabled(messageText.isEmpty && draftImages.isEmpty || isSending)
+            .opacity(messageText.isEmpty && draftImages.isEmpty || isSending ? 0.5 : 1)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -464,8 +465,9 @@ struct ChatView: View {
 
     private func sendMessage() {
         let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty || !draftImages.isEmpty else { return }
+        guard !isSending, !text.isEmpty || !draftImages.isEmpty else { return }
         if !draftImages.isEmpty {
+            isSending = true
             Task {
                 var uploadedURLs: [String] = []
                 for img in draftImages {
@@ -485,6 +487,7 @@ struct ChatView: View {
                     mentionSearchText = ""
                     messageText = ""
                     draftImages.removeAll()
+                    isSending = false
                 }
             }
         } else {

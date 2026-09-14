@@ -25,13 +25,14 @@ struct ServerConfig {
         return "ws://" + http + "/ws"
     }
 
-    func url(for path: String) -> URL {
-        URL(string: baseURL + path)!
+    func url(for path: String) throws -> URL {
+        guard let url = URL(string: baseURL + path) else { throw APIError.invalidResponse }
+        return url
     }
 
-    func resourceURL(for path: String) -> URL {
-        if path.hasPrefix("http") { return URL(string: path)! }
-        return URL(string: baseURL + path)!
+    func resourceURL(for path: String) -> URL? {
+        if path.hasPrefix("http") { return URL(string: path) }
+        return URL(string: baseURL + path)
     }
 }
 
@@ -115,7 +116,7 @@ final class APIService {
 
     // MARK: - Generic POST
     private func post<T: Decodable>(_ path: String, body: [String: Any]) async throws -> T {
-        var request = URLRequest(url: ServerConfig.shared.url(for: path))
+        var request = try URLRequest(url: ServerConfig.shared.url(for: path))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -137,7 +138,9 @@ final class APIService {
     // MARK: - 搜索群聊
     func searchGroups(keyword: String) async throws -> [SearchGroup] {
         let encoded = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? keyword
-        let url = URL(string: ServerConfig.shared.baseURL + "/api/search-groups?keyword=" + encoded)!
+        guard let url = URL(string: ServerConfig.shared.baseURL + "/api/search-groups?keyword=" + encoded) else {
+            throw APIError.invalidResponse
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         let (data, response) = try await session.data(for: request)

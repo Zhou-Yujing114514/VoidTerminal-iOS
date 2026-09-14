@@ -272,7 +272,7 @@ struct ServerConfigView: View {
         NavigationStack {
             Form {
                 Section("服务器地址") {
-                    TextField("http://buer.kdns.fr", text: $serverURL)
+                    TextField("https://buer.kdns.fr", text: $serverURL)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                     Text("WebSocket地址将自动推导：\(derivedWSURL)")
