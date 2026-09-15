@@ -20,9 +20,10 @@ struct ServerConfig {
         if http.hasPrefix("https://") {
             return "wss://" + http.dropFirst(8) + "/ws"
         } else if http.hasPrefix("http://") {
-            return "ws://" + http.dropFirst(7) + "/ws"
+            return "wss://" + http.dropFirst(7) + "/ws"
         }
-        return "ws://" + http + "/ws"
+        // 裸主机名默认按加密连接处理（与 Dart 端一致）
+        return "wss://" + http + "/ws"
     }
 
     func url(for path: String) throws -> URL {
