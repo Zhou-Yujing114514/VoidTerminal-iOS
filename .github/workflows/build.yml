@@ -30,20 +30,8 @@ jobs:
       run: |
         mkdir -p Payload
         cp -r build/Build/Products/Release-iphoneos/VoidTerminal.app Payload/
-        cat > package_ipa.py << 'PYEOF'
-import zipfile, os
-with zipfile.ZipFile('VoidTerminal.ipa', 'w', zipfile.ZIP_DEFLATED) as zf:
-    zf.writestr('Payload/', '')
-    for root, dirs, files in os.walk('Payload'):
-        for d in dirs:
-            zf.writestr(os.path.join(root, d) + '/', '')
-        for f in files:
-            fp = os.path.join(root, f)
-            zf.write(fp, fp)
-print('IPA packaged:', os.path.getsize('VoidTerminal.ipa'), 'bytes')
-PYEOF
-        python3 package_ipa.py
-        rm -rf Payload package_ipa.py
+        python3 scripts/package_ipa.py
+        rm -rf Payload
 
     - name: Upload IPA
       uses: actions/upload-artifact@v4
