@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// App 更新信息
 struct AppUpdateInfo: Codable {
