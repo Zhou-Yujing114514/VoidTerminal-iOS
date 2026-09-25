@@ -27,10 +27,12 @@ struct VoidTerminalApp: App {
                 .onChange(of: scenePhase) { newPhase in
                     switch newPhase {
                     case .active:
-                        // 进入前台时自动重连 WebSocket
+                        SecureLogger.shared.log("app enter foreground", level: .debug, module: "App")
                         WebSocketService.shared.reconnectIfNeeded()
-                    case .inactive, .background:
-                        break
+                    case .inactive:
+                        SecureLogger.shared.log("app scene inactive", level: .debug, module: "App")
+                    case .background:
+                        SecureLogger.shared.log("app enter background", level: .debug, module: "App")
                     @unknown default:
                         break
                     }

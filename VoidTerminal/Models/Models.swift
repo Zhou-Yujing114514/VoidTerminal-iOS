@@ -8,7 +8,6 @@ struct User: Codable, Identifiable, Hashable {
     var role: String?
     var banned: Bool?
     let createdAt: Int?
-    var totpEnabled: Bool?
 
     var displayName: String { username }
     var isAdmin: Bool { role == "admin" }
@@ -176,12 +175,6 @@ struct RegisterResponse: Codable {
 struct MeResponse: Codable {
     let ok: Bool
     let user: User
-}
-
-struct TOTPEnableResponse: Codable {
-    let ok: Bool
-    let secret: String?
-    let uri: String?
 }
 
 struct HelloMessage: Codable {

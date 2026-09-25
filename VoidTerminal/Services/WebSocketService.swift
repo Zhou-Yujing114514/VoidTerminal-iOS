@@ -55,13 +55,17 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
 
     // MARK: - Connection
     func connect(token: String) {
+        SecureLogger.shared.log("WebSocket connect, token length=\(token.count)", level: .debug, module: "WebSocket")
         reconnectAttempts = 0
         if task != nil { disconnect() }
         isManualDisconnect = false  // 必须在 disconnect() 之后设置，否则会被覆盖
         startConnectionCheck()
         self.token = token
         self.lastToken = token
-        guard let url = URL(string: ServerConfig.shared.wsURL) else { return }
+        guard let url = URL(string: ServerConfig.shared.wsURL) else {
+            SecureLogger.shared.log("invalid wsURL", level: .error, module: "WebSocket")
+            return
+        }
         task = session.webSocketTask(with: url)
         task?.resume()
         _isConnected = true
@@ -73,6 +77,7 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     }
 
     func disconnect() {
+        SecureLogger.shared.log("WebSocket disconnect (manual)", level: .debug, module: "WebSocket")
         isManualDisconnect = true
         reconnectTimer?.invalidate()
         reconnectTimer = nil
@@ -90,6 +95,7 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     func reconnectIfNeeded() {
         guard !isManualDisconnect else { return }
         guard !isConnected, let token = token ?? lastToken else { return }
+        SecureLogger.shared.log("foreground resume: reconnecting", module: "WebSocket")
         reconnectAttempts = 0
         connect(token: token)
     }

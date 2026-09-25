@@ -6,7 +6,6 @@ struct ProfileView: View {
     @EnvironmentObject var chatVM: ChatViewModel
     @State private var showChangeUsername = false
     @State private var showChangePassword = false
-    @State private var showTwoFA = false
     @State private var showFontSize = false
     @State private var showAdmin = false
     @State private var showServerConfig = false
@@ -89,22 +88,35 @@ struct ProfileView: View {
                             // 调试UI已移除
 
                             menuButton(title: "日间 / 夜间模式") {
+                                let new = appState.theme == .dark ? "light" : "dark"
+                                SecureLogger.shared.log("theme switched to \(new)", module: "Settings")
                                 appState.theme = appState.theme == .dark ? .light : .dark
                             }
 
-                            menuButton(title: "字体大小") { showFontSize = true }
+                            menuButton(title: "字体大小") {
+                                SecureLogger.shared.log("open font size view", level: .debug, module: "UI")
+                                showFontSize = true
+                            }
 
-                            menuButton(title: "更改用户名") { showChangeUsername = true }
+                            menuButton(title: "更改用户名") {
+                                SecureLogger.shared.log("open change username", level: .debug, module: "UI")
+                                showChangeUsername = true
+                            }
 
-                            menuButton(title: "更改密码") { showChangePassword = true }
+                            menuButton(title: "更改密码") {
+                                SecureLogger.shared.log("open change password", level: .debug, module: "UI")
+                                showChangePassword = true
+                            }
 
-                            menuButton(title: "两步验证") { showTwoFA = true }
-
-                            menuButton(title: "服务器设置") { showServerConfig = true }
+                            menuButton(title: "服务器设置") {
+                                SecureLogger.shared.log("open server config", level: .debug, module: "UI")
+                                showServerConfig = true
+                            }
                             menuButton(title: "🔍 调试日志") { showDebugLog = true }
                             menuButton(title: "📋 更新日志") { showChangelog = true }
 
                             Button {
+                                SecureLogger.shared.log("user logout", module: "Auth")
                                 appState.logout()
                             } label: {
                                 Text("退出登录")
@@ -124,6 +136,7 @@ struct ProfileView: View {
             .navigationBarHidden(true)
             .onChange(of: avatarItem) { newValue in
                 guard let newValue = newValue else { return }
+                SecureLogger.shared.log("change avatar", module: "Settings")
                 Task {
                     if let data = try? await newValue.loadTransferable(type: Data.self),
                        let image = UIImage(data: data),
@@ -142,7 +155,6 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showChangeUsername) { ChangeUsernameView() }
             .sheet(isPresented: $showChangePassword) { ChangePasswordView() }
-            .sheet(isPresented: $showTwoFA) { TwoFAView() }
             .sheet(isPresented: $showFontSize) { FontSizeView() }
             .sheet(isPresented: $showAdmin) { AdminView().environmentObject(chatVM) }
             .sheet(isPresented: $showServerConfig) { ServerConfigView() }

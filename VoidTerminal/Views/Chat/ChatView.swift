@@ -474,6 +474,7 @@ struct ChatView: View {
             return
         }
         lastSendAttemptTime = now
+        SecureLogger.shared.log("send message, textLen=\(text.count), images=\(draftImages.count)", level: .debug, module: "Chat")
         if !draftImages.isEmpty {
             isSending = true
             Task {

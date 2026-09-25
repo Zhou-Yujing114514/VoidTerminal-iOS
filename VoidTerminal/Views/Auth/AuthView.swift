@@ -3,12 +3,10 @@ import SwiftUI
 struct AuthView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var chatVM: ChatViewModel
-    private enum AuthTab { case login, totp, register }
+    private enum AuthTab { case login, register }
     @State private var tab: AuthTab = .login
     @State private var loginUsername = ""
     @State private var loginPassword = ""
-    @State private var totpUsername = ""
-    @State private var totpCode = ""
     @State private var regUsername = ""
     @State private var regPassword = ""
     @State private var regPassword2 = ""
@@ -51,10 +49,6 @@ struct AuthView: View {
                             tab = .login
                             message = ""
                         }
-                        tabButton(title: "验证器", isActive: tab == .totp) {
-                            tab = .totp
-                            message = ""
-                        }
                         tabButton(title: "注册", isActive: tab == .register) {
                             tab = .register
                             message = ""
@@ -67,7 +61,6 @@ struct AuthView: View {
 
                     switch tab {
                     case .login: loginForm
-                    case .totp: totpForm
                     case .register: registerForm
                     }
                 }
@@ -133,28 +126,6 @@ struct AuthView: View {
         }
     }
 
-    private var totpForm: some View {
-        VStack(spacing: 12) {
-            AppTextField(placeholder: "用户名", text: $totpUsername)
-            AppTextField(placeholder: "认证器 6 位验证码", text: $totpCode)
-                .keyboardType(.numberPad)
-
-            if !message.isEmpty {
-                Text(message)
-                    .font(.vt(size: 13))
-                    .foregroundColor(Color(hex: "e5484d"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            PrimaryButton(title: isLoading ? "登录中..." : "验证码登录", action: doTotpLogin, isDisabled: isLoading)
-
-            Text("需先在「我的 → 两步验证」绑定认证器后方可使用。")
-                .font(.vt(size: 12))
-                .foregroundColor(Color.vtTextDim)
-                .multilineTextAlignment(.center)
-        }
-    }
-
     private var registerForm: some View {
         VStack(spacing: 12) {
             AppTextField(placeholder: "用户名（2-20位字母/数字/中文）", text: $regUsername)
@@ -187,31 +158,6 @@ struct AuthView: View {
         Task {
             do {
                 let resp = try await api.login(username: loginUsername, password: loginPassword)
-                await MainActor.run {
-                    appState.token = resp.token
-                    appState.currentUser = resp.user
-                    chatVM.setCurrentUserId(resp.user.id)
-                    isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    message = error.localizedDescription
-                    isLoading = false
-                }
-            }
-        }
-    }
-
-    private func doTotpLogin() {
-        guard !totpUsername.isEmpty, !totpCode.isEmpty else {
-            message = "请输入用户名和验证码"
-            return
-        }
-        isLoading = true
-        message = ""
-        Task {
-            do {
-                let resp = try await api.loginTotp(username: totpUsername, code: totpCode)
                 await MainActor.run {
                     appState.token = resp.token
                     appState.currentUser = resp.user
