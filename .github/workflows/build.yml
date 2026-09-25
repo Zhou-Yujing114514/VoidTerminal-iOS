@@ -30,7 +30,18 @@ jobs:
       run: |
         mkdir -p Payload
         cp -r build/Build/Products/Release-iphoneos/VoidTerminal.app Payload/
-        zip -r VoidTerminal.ipa Payload
+        python3 -c "
+import zipfile, os
+with zipfile.ZipFile('VoidTerminal.ipa', 'w', zipfile.ZIP_DEFLATED) as zf:
+    zf.writestr('Payload/', '')
+    for root, dirs, files in os.walk('Payload'):
+        for d in dirs:
+            zf.writestr(os.path.join(root, d) + '/', '')
+        for f in files:
+            fp = os.path.join(root, f)
+            zf.write(fp, fp)
+print('IPA packaged:', os.path.getsize('VoidTerminal.ipa'), 'bytes')
+"
         rm -rf Payload
 
     - name: Upload IPA
