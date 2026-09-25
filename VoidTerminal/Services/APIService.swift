@@ -138,8 +138,9 @@ final class APIService {
 
     // MARK: - 搜索群聊
     func searchGroups(keyword: String) async throws -> [SearchGroup] {
-        let encoded = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? keyword
-        guard let url = URL(string: ServerConfig.shared.baseURL + "/api/search-groups?keyword=" + encoded) else {
+        var comps = URLComponents(string: ServerConfig.shared.baseURL + "/api/search-groups")
+        comps?.queryItems = [URLQueryItem(name: "keyword", value: keyword)]
+        guard let url = comps?.url else {
             throw APIError.invalidResponse
         }
         var request = URLRequest(url: url)
@@ -163,6 +164,12 @@ final class APIService {
     func logout() async {
         // 清服务端 session，依赖 URLSession 自动保存的 Cookie
         let _: [String: Bool]? = try? await post("/api/logout", body: [:])
+        // 清理本地 Cookie，防止被自动登回
+        if let cookies = HTTPCookieStorage.shared.cookies {
+            for cookie in cookies {
+                HTTPCookieStorage.shared.deleteCookie(cookie)
+            }
+        }
     }
 }
 
