@@ -9,7 +9,8 @@ struct ProfileView: View {
     @State private var showFontSize = false
     @State private var showAdmin = false
     @State private var showServerConfig = false
-    @State private var showDebugLog = false
+    @State private var showLogShare = false
+    @State private var logShareURL: URL?
     @State private var showChangelog = false
     @State private var avatarItem: PhotosPickerItem?
 
@@ -112,7 +113,13 @@ struct ProfileView: View {
                                 SecureLogger.shared.log("open server config", level: .debug, module: "UI")
                                 showServerConfig = true
                             }
-                            menuButton(title: "🔍 调试日志") { showDebugLog = true }
+                            menuButton(title: "导出调试日志") {
+                                SecureLogger.shared.log("export debug log", module: "Settings")
+                                if let url = SecureLogger.shared.exportLog() {
+                                    logShareURL = url
+                                    showLogShare = true
+                                }
+                            }
                             menuButton(title: "📋 更新日志") { showChangelog = true }
 
                             Button {
@@ -158,8 +165,10 @@ struct ProfileView: View {
             .sheet(isPresented: $showFontSize) { FontSizeView() }
             .sheet(isPresented: $showAdmin) { AdminView().environmentObject(chatVM) }
             .sheet(isPresented: $showServerConfig) { ServerConfigView() }
-            .sheet(isPresented: $showDebugLog) {
-                DebugLogView()
+            .sheet(isPresented: $showLogShare) {
+                if let url = logShareURL {
+                    ShareSheet(items: [url])
+                }
             }
             .sheet(isPresented: $showChangelog) {
                 ChangelogView()
@@ -386,81 +395,6 @@ struct AdminView: View {
     }
 }
 import SwiftUI
-
-struct DebugLogView: View {
-    @State private var logs: [String] = []
-    @State private var timer: Timer?
-    @State private var showShareSheet = false
-    @State private var shareURL: URL?
-
-    private func exportLogs() {
-        let text = logs.joined(separator: "\n")
-        let tempDir = FileManager.default.temporaryDirectory
-        let fileURL = tempDir.appendingPathComponent("VoidTerminal_logs.txt")
-        do {
-            try text.write(to: fileURL, atomically: true, encoding: .utf8)
-            shareURL = fileURL
-            showShareSheet = true
-        } catch {
-            print("导出日志失败: \(error)")
-        }
-    }
-
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.vtBG.ignoresSafeArea()
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 4) {
-                        if logs.isEmpty {
-                            Text("暂无日志，登录后会自动记录")
-                                .foregroundColor(.vtTextDim)
-                                .padding()
-                        }
-                        ForEach(logs, id: \.self) { log in
-                            Text(log)
-                                .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(.vtText)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding(.horizontal, 12)
-                        }
-                    }
-                    .padding(.vertical, 12)
-                }
-            }
-            .navigationTitle("调试日志")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 12) {
-                        Button("导出") {
-                            exportLogs()
-                        }
-                        Button("清空") {
-                            AppLogger.shared.clear()
-                            logs = []
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showShareSheet) {
-                if let url = shareURL {
-                    ShareSheet(items: [url])
-                }
-            }
-            .onAppear {
-                logs = AppLogger.shared.logs
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    logs = AppLogger.shared.logs
-                }
-            }
-            .onDisappear {
-                timer?.invalidate()
-                timer = nil
-            }
-        }
-    }
-}
 
 // MARK: - Share Sheet
 struct ShareSheet: UIViewControllerRepresentable {
