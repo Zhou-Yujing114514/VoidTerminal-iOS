@@ -88,14 +88,14 @@ class AppUpdateChecker {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "下载更新", style: .default) { _ in
-            self.downloadAndShareIPA(url: info.url, from: viewController)
+            self.downloadAndShareIPA(url: info.url, version: info.version, from: viewController)
         })
         alert.addAction(UIAlertAction(title: "稍后再说", style: .cancel))
         viewController.present(alert, animated: true)
     }
 
     /// 下载 IPA 并弹出分享菜单
-    private func downloadAndShareIPA(url: String, from viewController: UIViewController) {
+    private func downloadAndShareIPA(url: String, version: String, from viewController: UIViewController) {
         guard let downloadURL = URL(string: url) else { return }
 
         let progress = UIAlertController(title: "下载中", message: "0%", preferredStyle: .alert)
@@ -107,7 +107,7 @@ class AppUpdateChecker {
                     if let localURL = localURL, error == nil {
                         // 移动到临时目录，保持 .ipa 后缀
                         let tempDir = FileManager.default.temporaryDirectory
-                        let destURL = tempDir.appendingPathComponent("VoidTerminal-\(info.version).ipa")
+                        let destURL = tempDir.appendingPathComponent("VoidTerminal-\(version).ipa")
                         do {
                             if FileManager.default.fileExists(atPath: destURL.path) {
                                 try FileManager.default.removeItem(at: destURL)
