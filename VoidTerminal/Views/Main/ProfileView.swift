@@ -120,6 +120,16 @@ struct ProfileView: View {
                                     showLogShare = true
                                 }
                             }
+                            menuButton(title: "检查更新") {
+                                if let vc = UIApplication.shared.connectedScenes
+                                    .filter({ $0.activationState == .foregroundActive })
+                                    .compactMap({ $0 as? UIWindowScene })
+                                    .first?.windows
+                                    .first(where: { $0.isKeyWindow })?
+                                    .rootViewController {
+                                    AppUpdateChecker.shared.checkAndPrompt(from: vc)
+                                }
+                            }
                             menuButton(title: "📋 更新日志") { showChangelog = true }
 
                             Button {

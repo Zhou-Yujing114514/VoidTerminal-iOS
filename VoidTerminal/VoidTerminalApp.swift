@@ -17,6 +17,9 @@ struct VoidTerminalApp: App {
 
         // 启动网络状态监控
         NetworkMonitor.shared.start()
+
+        // 静默检查更新（每天一次）
+        AppUpdateChecker.shared.checkSilently { _ in }
     }
 
     var body: some Scene {
