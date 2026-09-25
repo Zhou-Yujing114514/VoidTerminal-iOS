@@ -378,7 +378,22 @@ import SwiftUI
 struct DebugLogView: View {
     @State private var logs: [String] = []
     @State private var timer: Timer?
-    
+    @State private var showShareSheet = false
+    @State private var shareURL: URL?
+
+    private func exportLogs() {
+        let text = logs.joined(separator: "\n")
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent("VoidTerminal_logs.txt")
+        do {
+            try text.write(to: fileURL, atomically: true, encoding: .utf8)
+            shareURL = fileURL
+            showShareSheet = true
+        } catch {
+            print("导出日志失败: \(error)")
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -405,10 +420,20 @@ struct DebugLogView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("清空") {
-                        AppLogger.shared.clear()
-                        logs = []
+                    HStack(spacing: 12) {
+                        Button("导出") {
+                            exportLogs()
+                        }
+                        Button("清空") {
+                            AppLogger.shared.clear()
+                            logs = []
+                        }
                     }
+                }
+            }
+            .sheet(isPresented: $showShareSheet) {
+                if let url = shareURL {
+                    ShareSheet(items: [url])
                 }
             }
             .onAppear {
@@ -423,4 +448,14 @@ struct DebugLogView: View {
             }
         }
     }
+}
+
+// MARK: - Share Sheet
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

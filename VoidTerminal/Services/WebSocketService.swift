@@ -9,6 +9,8 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
     private var _isConnected = false
     var isConnected: Bool { _isConnected }
     private var token: String?
+    /// 记住上次使用的 token，便于前台恢复或断线后重连
+    private var lastToken: String?
     private var reconnectAttempts = 0
     private var reconnectTimer: Timer?
     private var heartbeatTimer: Timer?
@@ -58,6 +60,7 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
         isManualDisconnect = false  // 必须在 disconnect() 之后设置，否则会被覆盖
         startConnectionCheck()
         self.token = token
+        self.lastToken = token
         guard let url = URL(string: ServerConfig.shared.wsURL) else { return }
         task = session.webSocketTask(with: url)
         task?.resume()
@@ -81,6 +84,14 @@ final class WebSocketService: NSObject, URLSessionWebSocketDelegate {
         task = nil
         _isConnected = false
         token = nil
+    }
+
+    /// 前台恢复时自动重连（如果不是手动断开且有保存的 token）
+    func reconnectIfNeeded() {
+        guard !isManualDisconnect else { return }
+        guard !isConnected, let token = token ?? lastToken else { return }
+        reconnectAttempts = 0
+        connect(token: token)
     }
 
     private func sendAuth() {

@@ -19,6 +19,7 @@ struct ChatView: View {
     @State private var showMentionPanel = false
     @State private var mentionSearchText = ""
     @State private var isSending = false
+    @State private var lastSendAttemptTime: Date = .distantPast
     @FocusState private var isInputFocused: Bool
 
     private let api = APIService.shared
@@ -466,6 +467,13 @@ struct ChatView: View {
     private func sendMessage() {
         let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !isSending, !text.isEmpty || !draftImages.isEmpty else { return }
+        // 双层防重复：isSending 锁 + 时间戳防抖（0.5秒内不允许二次触发）
+        let now = Date()
+        guard now.timeIntervalSince(lastSendAttemptTime) >= 0.5 else {
+            chatVM.showToast("发送太快了，稍等一下")
+            return
+        }
+        lastSendAttemptTime = now
         if !draftImages.isEmpty {
             isSending = true
             Task {

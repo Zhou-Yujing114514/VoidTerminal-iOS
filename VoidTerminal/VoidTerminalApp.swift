@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct VoidTerminalApp: App {
     @StateObject private var appState = AppState()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         // 配置全局 URLCache：内存 20MB + 磁盘 200MB
@@ -23,6 +24,17 @@ struct VoidTerminalApp: App {
             RootView()
                 .environmentObject(appState)
                 .preferredColorScheme(appState.theme == .dark ? .dark : .light)
+                .onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .active:
+                        // 进入前台时自动重连 WebSocket
+                        WebSocketService.shared.reconnectIfNeeded()
+                    case .inactive, .background:
+                        break
+                    @unknown default:
+                        break
+                    }
+                }
         }
     }
 }
