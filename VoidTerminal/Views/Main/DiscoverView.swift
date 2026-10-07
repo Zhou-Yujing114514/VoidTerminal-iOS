@@ -37,7 +37,7 @@ struct DiscoverView: View {
             .navigationBarHidden(true)
             .alert("警告", isPresented: $showTomatoWarning) {
                 Button("我确认", role: .destructive) {
-                    if let url = URL(string: "https://sswwgzs.cn") {
+                    if let url = URL(string: "https://morax.sswwgzs.cn") {
                         UIApplication.shared.open(url)
                     }
                 }

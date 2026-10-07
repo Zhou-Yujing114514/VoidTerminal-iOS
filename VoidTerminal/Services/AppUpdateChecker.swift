@@ -17,7 +17,7 @@ struct AppUpdateInfo: Codable {
 class AppUpdateChecker {
     static let shared = AppUpdateChecker()
 
-    private let versionURL = "https://qgs.kdns.fr/downloads/voidterminal/version.json"
+    private let versionURL = "https://sswwgzs.cn/downloads/voidterminal/version.json"
     private var lastCheckDate: Date?
 
     private init() {}
