@@ -8,7 +8,7 @@ struct ServerConfig {
     var baseURL: String {
         get {
             UserDefaults.standard.string(forKey: "vt_server_url")
-                ?? "https://buer.kdns.fr"
+                ?? "https://buer.sswwgzs.cn"
         }
         nonmutating set {
             UserDefaults.standard.set(newValue, forKey: "vt_server_url")

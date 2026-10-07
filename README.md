@@ -84,7 +84,7 @@ zip -r VoidTerminal.ipa Payload
 
 ## 服务器配置
 
-默认服务器地址：`http://buer.kdns.fr`
+默认服务器地址：`http://buer.sswwgzs.cn`
 
 在登录页点击「服务器设置」可修改服务器地址。
 WebSocket 地址会自动从 HTTP 地址推导（http→ws, https→wss）。
